@@ -1,4 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="사빛교 기도제목"
         android:name="${applicationName}"
@@ -12,6 +13,8 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
+            <!-- Disable Flutter's built-in deep linking to prevent conflict with Kakao SDK -->
+            <meta-data android:name="flutter_deeplinking_enabled" android:value="false" />
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
@@ -47,6 +50,12 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <!-- Kakao SDK: detect KakaoTalk -->
+        <package android:name="com.kakao.talk" />
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="kakaotalk" />
         </intent>
     </queries>
 </manifest>
