@@ -32,10 +32,12 @@ class _PrayerItemEditorState extends ConsumerState<PrayerItemEditor>
   late Animation<double> _slideAnimation;
   late Animation<double> _opacityAnimation;
   late Animation<double> _heightAnimation;
+  late final TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
+    _textController = TextEditingController(text: widget.item.content);
     _deleteController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -64,7 +66,17 @@ class _PrayerItemEditorState extends ConsumerState<PrayerItemEditor>
   }
 
   @override
+  void didUpdateWidget(covariant PrayerItemEditor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.item.content != widget.item.content &&
+        widget.item.content != _textController.text) {
+      _textController.text = widget.item.content;
+    }
+  }
+
+  @override
   void dispose() {
+    _textController.dispose();
     _deleteController.dispose();
     super.dispose();
   }
@@ -194,14 +206,7 @@ class _PrayerItemEditorState extends ConsumerState<PrayerItemEditor>
           // Text input
           Expanded(
             child: TextField(
-              controller: TextEditingController.fromValue(
-                TextEditingValue(
-                  text: widget.item.content,
-                  selection: TextSelection.collapsed(
-                    offset: widget.item.content.length,
-                  ),
-                ),
-              ),
+              controller: _textController,
               onChanged: (value) {
                 widget.onUpdate(
                   widget.item.id,

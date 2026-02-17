@@ -38,10 +38,12 @@ class _PrayerSectionEditorState extends ConsumerState<PrayerSectionEditor>
 
   int _itemIdCounter = 0;
   int _subsectionIdCounter = 0;
+  late final TextEditingController _nameController;
 
   @override
   void initState() {
     super.initState();
+    _nameController = TextEditingController(text: widget.section.name);
     _deleteController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -67,7 +69,17 @@ class _PrayerSectionEditorState extends ConsumerState<PrayerSectionEditor>
   }
 
   @override
+  void didUpdateWidget(covariant PrayerSectionEditor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.section.name != widget.section.name &&
+        widget.section.name != _nameController.text) {
+      _nameController.text = widget.section.name;
+    }
+  }
+
+  @override
   void dispose() {
+    _nameController.dispose();
     _deleteController.dispose();
     super.dispose();
   }
@@ -315,14 +327,7 @@ class _PrayerSectionEditorState extends ConsumerState<PrayerSectionEditor>
             children: [
               Expanded(
                 child: TextField(
-                  controller: TextEditingController.fromValue(
-                    TextEditingValue(
-                      text: widget.section.name,
-                      selection: TextSelection.collapsed(
-                        offset: widget.section.name.length,
-                      ),
-                    ),
-                  ),
+                  controller: _nameController,
                   onChanged: _updateSectionName,
                   style: TextStyle(
                     fontSize: fontSize * 0.14,

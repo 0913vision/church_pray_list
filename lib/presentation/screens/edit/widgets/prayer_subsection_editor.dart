@@ -35,9 +35,12 @@ class _PrayerSubsectionEditorState
   late Animation<double> _opacityAnimation;
   late Animation<double> _heightAnimation;
 
+  late final TextEditingController _nameController;
+
   @override
   void initState() {
     super.initState();
+    _nameController = TextEditingController(text: widget.subsection.name);
     _deleteController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -63,7 +66,17 @@ class _PrayerSubsectionEditorState
   }
 
   @override
+  void didUpdateWidget(covariant PrayerSubsectionEditor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.subsection.name != widget.subsection.name &&
+        widget.subsection.name != _nameController.text) {
+      _nameController.text = widget.subsection.name;
+    }
+  }
+
+  @override
   void dispose() {
+    _nameController.dispose();
     _deleteController.dispose();
     super.dispose();
   }
@@ -262,14 +275,7 @@ class _PrayerSubsectionEditorState
             children: [
               Expanded(
                 child: TextField(
-                  controller: TextEditingController.fromValue(
-                    TextEditingValue(
-                      text: widget.subsection.name,
-                      selection: TextSelection.collapsed(
-                        offset: widget.subsection.name.length,
-                      ),
-                    ),
-                  ),
+                  controller: _nameController,
                   onChanged: _updateName,
                   style: TextStyle(
                     fontSize: fontSize * 0.13,
